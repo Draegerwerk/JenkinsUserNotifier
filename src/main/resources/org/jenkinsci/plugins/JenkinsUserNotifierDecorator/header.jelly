@@ -1,0 +1,8 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <j:if test="${it.getInformation() != null}">
+    <link type="text/css" rel="stylesheet" href="${it.getInformation()}" />
+  </j:if>
+  <j:if test="${it.getDate() != null}">
+    <script type="text/javascript" src="${it.getDate()}"></script>
+  </j:if>
+</j:jelly>

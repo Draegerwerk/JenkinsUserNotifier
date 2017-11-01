@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="JenkinsUserNotifier" />
         <module name="Notifier" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JenkinsUserNotifier" target="1.7" />
       <module name="Notifier" target="1.7" />
     </bytecodeTargetLevel>
   </component>
