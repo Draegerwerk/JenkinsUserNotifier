@@ -1,8 +1,23 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <j:if test="${it.getInformation() != null}">
-    <link type="text/css" rel="stylesheet" href="${it.getInformation()}" />
-  </j:if>
-  <j:if test="${it.getDate() != null}">
-    <script type="text/javascript" src="${it.getDate()}"></script>
-  </j:if>
+	<style>
+		.notifier_container {
+			overflow: auto;
+			height: 43px;
+			line-height: 3em;
+			border-bottom: 1px solid #d3d7cf;
+		}
+		.notifier_icon {
+			float: left;
+			margin-left: 1em;
+		}
+		.notifier_message {
+			float: left;
+			margin-left: 1em;
+		}
+		.notifier_close {
+			float: right;
+			margin-right: 2em;
+		}
+	</style>
+    <script type="text/javascript" src="${rootURL}/plugin/JenkinsUserNotifier/test.js"></script>
 </j:jelly>

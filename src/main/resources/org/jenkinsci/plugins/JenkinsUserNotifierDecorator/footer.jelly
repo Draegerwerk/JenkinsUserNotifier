@@ -1,0 +1,23 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<div class="notifier_container" id="notifier_container">
+		<div class="notifier_icon">
+			<img src="${rootURL}/plugin/JenkinsUserNotifier/images/Tango-style_info_icon.svg" height="24px"></img>
+		</div>
+		<div class="notifier_message">
+			&#160;${it.information}
+		</div>
+		<div class="notifier_close">
+			<a href="#HIDE" onclick="hide_notifier('notifier_container');">
+				<div title="Dismiss" class="smallfont">
+					HIDE
+				</div>
+			</a>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var header = document.getElementsByClassName("top-sticker-inner")[0]
+		var notifier_container = document.getElementById("notifier_container");
+		header.appendChild(notifier_container.cloneNode(true));
+		notifier_container.outerHTML='';
+	</script>
+</j:jelly>
