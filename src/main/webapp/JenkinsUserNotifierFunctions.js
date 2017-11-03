@@ -62,10 +62,10 @@ function setCookie(name, value, expiration_date) {
 // returns the value of the given cookie if it exists
 function getCookie(c_name) {
     var name = c_name + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
+    var decodedCookieList = decodeURIComponent(document.cookie);
+    var cookies = decodedCookieList.split(';');
+    for(var i = 0; i < cookies.length; i++) {
+        var c = cookies[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
         }
