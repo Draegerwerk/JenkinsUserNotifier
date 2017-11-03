@@ -26,8 +26,10 @@ package org.jenkinsci.plugins;
 
 import hudson.Extension;
 import hudson.model.PageDecorator;
+import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
 
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.UnsupportedEncodingException;
@@ -37,6 +39,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Extension
 public class JenkinsUserNotifierDecorator extends PageDecorator{
@@ -53,8 +57,6 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	public boolean configure(StaplerRequest req, JSONObject formData)
 			throws FormException {
 		information = formData.getString("information");
-
-		// TODO: check if the typed date is valid or not.
 		date = formData.getString("date");
 
 		// generate uuid for the cookie that is saved for any client that hides the notification bar
@@ -98,17 +100,23 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	 * @return true if current date is smaller than the saved one
 	 */
 	public boolean getNotificationActiveStatus() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-		Date date = null;
+		// if there is no date given, then show the notification
+		if(this.date != null && !Objects.equals(this.date, ""))
+		{
+			// otherwise check if date is past already
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			Date date = null;
 
-		try {
-			date = simpleDateFormat.parse(this.date);
-		} catch (ParseException ex) {
-			System.out.println("Exception " + ex);
+			try {
+				date = simpleDateFormat.parse(this.date);
+			} catch (ParseException ex) {
+				System.out.println("Exception " + ex);
+			}
+			long currentEpoch = System.currentTimeMillis() / 1000;
+			assert date != null;
+			return currentEpoch < (date.getTime() / 1000);
 		}
-		long currentEpoch = System.currentTimeMillis() / 1000;
-		assert date != null;
-		return currentEpoch < (date.getTime() / 1000);
+		return true;
 	}
 
 	/**
@@ -117,5 +125,16 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	 */
 	public String getNotificationUUID() {
 		return uuid;
+	}
+
+	public FormValidation doCheckDate(@QueryParameter(fixEmpty=true) String date) {
+		if (date != null && !Objects.equals(date, "")) {
+			Pattern p = Pattern.compile("^(0[123456789]|1[012])/(0[123456789]|[12]\\d|3[01])/\\d\\d\\d\\d$");
+			Matcher m = p.matcher(date);
+			if(!m.matches()) {
+				return FormValidation.error(String.format("%s is not a valid date!", date));
+			}
+		}
+		return FormValidation.ok();
 	}
 }
