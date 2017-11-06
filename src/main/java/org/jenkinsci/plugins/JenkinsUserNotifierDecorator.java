@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 
 @Extension
 public class JenkinsUserNotifierDecorator extends PageDecorator{
+	private boolean aktive;
 	private String information;
 	private String date;
 	private String uuid;
@@ -60,11 +61,6 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 		return PageDecorator.all().get(JenkinsUserNotifierDecorator.class);
 	}
 
-	/*
-	public static JenkinsUserNotifierDecorator getConfig() {
-		return GlobalConfiguration.all().get(JenkinsUserNotifierDecorator.class);
-	}*/
-
 	/**
 	 * Configuration function called when a new configuration is saved inside jenkins
 	 * @param req The StaplerRequest
@@ -75,6 +71,7 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	@Override
 	public boolean configure(StaplerRequest req, JSONObject formData)
 			throws FormException {
+		aktive = formData.getBoolean("aktive");
 		information = formData.getString("information");
 		date = formData.getString("date");
 
@@ -114,6 +111,12 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	}
 
 	/**
+	 * Getter for the saved notification aktivated state
+	 * @return aktive
+	 */
+	public Boolean getAktive() { return aktive; }
+
+	/**
 	 * Getter for the notification uuid (timestamp)
 	 * @return uuid
 	 */
@@ -132,13 +135,13 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 		{
 			// otherwise check if date is past already
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-			Date date = null;
+			Date convertedDate = null;
 
-			date = simpleDateFormat.parse(this.date);
+			convertedDate = simpleDateFormat.parse(this.date);
 
 			long currentEpoch = System.currentTimeMillis() / 1000;
-			assert date != null;
-			return currentEpoch < (date.getTime() / 1000);
+			assert convertedDate != null;
+			return currentEpoch < (convertedDate.getTime() / 1000) && this.aktive;
 		}
 		return true;
 	}
