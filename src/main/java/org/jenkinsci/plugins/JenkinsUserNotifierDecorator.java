@@ -49,6 +49,9 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	private String date;
 	private String uuid;
 
+	private String day;
+	private String month;
+	private String year;
 	/**
 	 * Default Constructor
 	 */
@@ -75,6 +78,10 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 		information = formData.getString("information");
 		date = formData.getString("date");
 
+		day = formData.getString("day");
+		month = formData.getString("month");
+		year = formData.getString("year");
+
 		// generate uuid for the cookie that is saved for any client that hides the notification bar
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -95,6 +102,11 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	}
 
 	/**
+	 * Getter for the saved notification aktivated state
+	 * @return aktive
+	 */
+	public Boolean getAktive() { return aktive; }
+	/**
 	 * Getter for the saved Information that is displayed inside the notification bar
 	 * @return the saved information
 	 */
@@ -111,10 +123,28 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	}
 
 	/**
-	 * Getter for the saved notification aktivated state
-	 * @return aktive
+	 * Getter for the saved date the notification will be shown
+	 * @return the saved date
 	 */
-	public Boolean getAktive() { return aktive; }
+	public String getDay() {
+		return day;
+	}
+
+	/**
+	 * Getter for the saved date the notification will be shown
+	 * @return the saved date
+	 */
+	public String getMonth() {
+		return month;
+	}
+
+	/**
+	 * Getter for the saved date the notification will be shown
+	 * @return the saved date
+	 */
+	public String getYear() {
+		return year;
+	}
 
 	/**
 	 * Getter for the notification uuid (timestamp)
@@ -159,6 +189,11 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 				return FormValidation.error(String.format("%s is not a valid date!", date));
 			}
 		}
+		return FormValidation.ok();
+	}
+
+	public FormValidation doCheckDay(String day) {
+		System.out.println(day);
 		return FormValidation.ok();
 	}
 }

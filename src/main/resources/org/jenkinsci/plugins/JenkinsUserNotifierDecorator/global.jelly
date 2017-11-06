@@ -34,5 +34,14 @@
 		<f:entry title="${%ShowUntil}" help="${%ShowHelp}" field="date">
 			<f:textbox />
 		</f:entry>
+		<f:entry title="${%ShowUntil}" help="${%ShowHelp}">
+			<table>
+				<tr>
+					<td><f:number field="day" default="1" min="1" max="31"/></td>
+					<td><f:number field="month" default="1" min="1" max="31"/></td>
+					<td><f:number field="year" default="1" min="1" max="31"/></td>
+				</tr>
+			</table>
+		</f:entry>
 	</f:section>
 </j:jelly>
