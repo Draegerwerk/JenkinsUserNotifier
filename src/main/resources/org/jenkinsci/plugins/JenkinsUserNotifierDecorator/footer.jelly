@@ -25,12 +25,12 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<j:if test="${it.getNotificationActiveStatus()}">
-		<div class="notifier_container" id="notifier_container">
+		<div class="notifier_container" id="notifier_container" style="display: none;">
 			<div class="notifier_icon">
 				<img src="${rootURL}/plugin/JenkinsUserNotifier/images/Tango-style_info_icon.svg" height="24px"></img>
 			</div>
 			<div class="notifier_message">
-				&#160;${it.information}
+				${it.getInformation()}
 			</div>
 			<div class="notifier_close">
 				<a href="#HIDE" onclick="hideNotifier('${it.getNotificationUUID()}', '${it.getDate()}');">
@@ -44,6 +44,7 @@
 			// only show notification bar when cookie doesn't exist
 			var notifier_container = document.getElementById("notifier_container");
 		 	if( !cookieExists('${it.getNotificationUUID()}') ) {
+		 		notifier_container.style = "";
 				var header = document.getElementsByClassName("top-sticker-inner")[0];
 				header.appendChild(notifier_container.cloneNode(true));
 			}
