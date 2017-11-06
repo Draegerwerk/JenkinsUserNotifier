@@ -27,13 +27,10 @@ package org.jenkinsci.plugins;
 import hudson.Extension;
 import hudson.model.PageDecorator;
 import hudson.util.FormValidation;
-import jenkins.model.Configuration;
-import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import sun.font.Decoration;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -56,7 +53,6 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	 */
 	public JenkinsUserNotifierDecorator() {
 		super(JenkinsUserNotifierDecorator.class);
-		//super();
 		load();
 	}
 
