@@ -27,10 +27,13 @@ package org.jenkinsci.plugins;
 import hudson.Extension;
 import hudson.model.PageDecorator;
 import hudson.util.FormValidation;
+import jenkins.model.Configuration;
+import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import sun.font.Decoration;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -48,11 +51,31 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	private String date;
 	private String uuid;
 
+	/**
+	 * Default Constructor
+	 */
 	public JenkinsUserNotifierDecorator() {
 		super(JenkinsUserNotifierDecorator.class);
+		//super();
 		load();
 	}
 
+	public static  JenkinsUserNotifierDecorator getConfig() {
+		return PageDecorator.all().get(JenkinsUserNotifierDecorator.class);
+	}
+
+	/*
+	public static JenkinsUserNotifierDecorator getConfig() {
+		return GlobalConfiguration.all().get(JenkinsUserNotifierDecorator.class);
+	}*/
+
+	/**
+	 * Configuration function called when a new configuration is saved inside jenkins
+	 * @param req The StaplerRequest
+	 * @param formData The new configuration data stored as an JSONObject
+	 * @return success state
+	 * @throws FormException
+	 */
 	@Override
 	public boolean configure(StaplerRequest req, JSONObject formData)
 			throws FormException {
@@ -95,11 +118,19 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	}
 
 	/**
+	 * Getter for the notification uuid (timestamp)
+	 * @return uuid
+	 */
+	public String getNotificationUUID() {
+		return uuid;
+	}
+
+	/**
 	 * Compares the current date with the date that was saved,
 	 * to evaluate if the Notification Banner should be loaded or not
 	 * @return true if current date is smaller than the saved one
 	 */
-	public boolean getNotificationActiveStatus() {
+	public boolean getNotificationActiveStatus() throws ParseException {
 		// if there is no date given, then show the notification
 		if(this.date != null && !Objects.equals(this.date, ""))
 		{
@@ -107,11 +138,8 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 			Date date = null;
 
-			try {
-				date = simpleDateFormat.parse(this.date);
-			} catch (ParseException ex) {
-				System.out.println("Exception " + ex);
-			}
+			date = simpleDateFormat.parse(this.date);
+
 			long currentEpoch = System.currentTimeMillis() / 1000;
 			assert date != null;
 			return currentEpoch < (date.getTime() / 1000);
@@ -120,13 +148,10 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	}
 
 	/**
-	 * Getter for the notification uuid (timestamp)
-	 * @return uuid
+	 * validation function that is automatically called, when when the user unfocuses the configuration textbox
+	 * @param date the date string that is to be validated
+	 * @return the type of validation status: ok, error
 	 */
-	public String getNotificationUUID() {
-		return uuid;
-	}
-
 	public FormValidation doCheckDate(@QueryParameter(fixEmpty=true) String date) {
 		if (date != null && !Objects.equals(date, "")) {
 			Pattern p = Pattern.compile("^(0[123456789]|1[012])/(0[123456789]|[12]\\d|3[01])/\\d\\d\\d\\d$");
