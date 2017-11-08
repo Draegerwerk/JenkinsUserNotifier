@@ -33,11 +33,8 @@
 				${it.getInformation()}
 			</div>
 			<div class="notifier_close">
-				<a href="#HIDE" onclick="hideNotifier('${it.getNotificationUUID()}', '${it.getDate()}');">
-					<div title="Dismiss" class="smallfont">
-						HIDE
-					</div>
-				</a>
+				<input type="button" onclick="hideNotifier('${it.getNotificationUUID()}', '${it.getDate()}');"
+					   value="OK" class="notifier_close_btn" />
 			</div>
 		</div>
 		<script type="text/javascript">

@@ -44,6 +44,18 @@
 				float: right;
 				margin-right: 2em;
 			}
+			.notifier_close_btn{
+				padding: 2px 11px;
+				background: #bbb;
+				border: 0 none;
+				cursor: pointer;
+			}
+			.notifier_close_btn:hover {
+				background: #aaa;
+			}
+			.notifier_close_btn:active {
+				background: #ccc;
+			}
 		</style>
 		<script type="text/javascript" src="${rootURL}/plugin/JenkinsUserNotifier/JenkinsUserNotifierFunctions.js"></script>
 	</j:if>
