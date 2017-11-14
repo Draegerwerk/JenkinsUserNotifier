@@ -27,6 +27,7 @@ package org.jenkinsci.plugins;
 import hudson.Extension;
 import hudson.model.PageDecorator;
 import hudson.util.FormValidation;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
@@ -37,8 +38,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +48,8 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	private String information;
 	private String date;
 	private String uuid;
+
+    private List<TranslationConfig> translations;
 
 	/**
 	 * Default Constructor
@@ -71,20 +73,47 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	@Override
 	public boolean configure(StaplerRequest req, JSONObject formData)
 			throws FormException {
-		aktive = formData.getBoolean("aktive");
-		information = formData.getString("information");
-		date = formData.getString("date");
+		this.aktive = formData.getBoolean("aktive");
+		this.information = formData.getString("information");
+		this.date = formData.getString("date");
+
+        this.translations = new ArrayList<TranslationConfig>();
+
+        // check for existence of translations configured
+        if( formData.containsKey("translations") ) {
+            // are there multiple translations configured
+            JSONArray translations = formData.optJSONArray("translations");
+            if( translations != null ) {
+                for (int i = 0; i < translations.size(); i++) {
+                    JSONObject translation = translations.getJSONObject(i);
+
+                    String locale = translation.getString("locale");
+                    String text = translation.getString("translation");
+
+                    this.translations.add(new TranslationConfig(text, locale));
+                }
+            } else {
+                // there is probably just one translation configured
+                JSONObject translation = formData.optJSONObject("translations");
+                if( translation != null ) {
+                    String locale = translation.getString("locale");
+                    String text = translation.getString("translation");
+
+                    this.translations.add(new TranslationConfig(text, locale));
+                }
+            }
+        }
 
 		// generate uuid for the cookie that is saved for any client that hides the notification bar
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			md.update(date.getBytes("UTF-8"));
-			byte[] bytes = md.digest(information.getBytes("UTF-8"));
+			md.update(this.date.getBytes("UTF-8"));
+			byte[] bytes = md.digest(this.information.getBytes("UTF-8"));
 			StringBuilder sb = new StringBuilder();
 			for (byte aByte : bytes) {
 				sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
 			}
-			uuid = sb.toString();
+			this.uuid = sb.toString();
 		}
 		catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
 			e.printStackTrace();
@@ -99,30 +128,62 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	 * @return the saved information
 	 */
 	public String getInformation() {
-		return information;
+		return this.information;
 	}
+
+    /**
+     * Un use able because of "chicken egg problem" javascript is needed to get browser locale
+     * but jelly is interpreted before javascript
+     *
+     * Getter for the saved Information that is displayed inside the notification bar
+     * it looks into the translations and evaluates if the requested locale is available
+     * and returns the specific text for that. it defaults to the standard Information (en_GB)
+     * @param locale the String representation of the requested locale
+     * @return the requested text
+     */
+    @Deprecated
+	public String getInformationByLocale(String locale) {
+	    String return_text = this.information;
+
+        for(TranslationConfig translation: translations) {
+            if( translation.getLocale().equals(locale)) {
+                return_text = translation.getTranslation();
+                break;
+            }
+        }
+
+        return return_text;
+    }
 
 	/**
 	 * Getter for the saved date the notification will be shown
 	 * @return the saved date
 	 */
 	public String getDate() {
-		return date;
+		return this.date;
 	}
 
 	/**
 	 * Getter for the saved notification aktivated state
 	 * @return aktive
 	 */
-	public Boolean getAktive() { return aktive; }
+	public Boolean getAktive() { return this.aktive; }
 
 	/**
 	 * Getter for the notification uuid (timestamp)
 	 * @return uuid
 	 */
 	public String getNotificationUUID() {
-		return uuid;
+		return this.uuid;
 	}
+
+    /**
+     * Getter for the translation configurations
+     * @return List of Translation Configurations
+     */
+    public List<TranslationConfig> getTranslations() {
+	    return this.translations;
+    }
 
 	/**
 	 * Compares the current date with the date that was saved,
