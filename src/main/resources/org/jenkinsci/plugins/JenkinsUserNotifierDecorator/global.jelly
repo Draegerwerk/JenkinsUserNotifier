@@ -49,7 +49,7 @@
 
                 <f:entry>
                     <div align="right" style="margin-left: 1em;">
-                        <f:repeatableDeleteButton value="$(%DeleteTranslation)" />
+                        <f:repeatableDeleteButton value="${%DeleteTranslation}" />
                     </div>
                 </f:entry>
                 </table>
