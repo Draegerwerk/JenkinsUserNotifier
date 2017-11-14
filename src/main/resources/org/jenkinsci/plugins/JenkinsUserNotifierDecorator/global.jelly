@@ -35,21 +35,21 @@
 			<f:textbox />
 		</f:entry>
 
-        <f:entry title="Translations" field="translations">
-            <f:repeatable field="translations" add="Add translation..." header="${%Translation}">
+        <f:entry title="${%Translations}" field="translations">
+            <f:repeatable field="translations" add="${%AddTranslation}" header="${%Translation}">
                 <table width="100%">
 
-                <f:entry field="locale" title="${%Choose Locale}">
+                <f:entry field="locale" title="${%ChooseLocale}" help="${%ChooseLocaleHelp}">
                    <f:select default="engb"/>
                 </f:entry>
 
-                <f:entry field="translation" title="${%Translation}" help="">
+                <f:entry field="translation" title="${%Translation}" help="${%TranslationHelp}">
                     <f:textbox />
                 </f:entry>
 
                 <f:entry>
                     <div align="right" style="margin-left: 1em;">
-                        <f:repeatableDeleteButton value="Delete Translation" />
+                        <f:repeatableDeleteButton value="$(%DeleteTranslation)" />
                     </div>
                 </f:entry>
                 </table>
