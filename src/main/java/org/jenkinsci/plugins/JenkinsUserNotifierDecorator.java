@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 
 @Extension
 public class JenkinsUserNotifierDecorator extends PageDecorator{
-	private boolean aktive;
+	private boolean active;
 	private String information;
 	private String date;
 	private String uuid;
@@ -59,7 +59,7 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 		load();
 	}
 
-	public static  JenkinsUserNotifierDecorator getConfig() {
+	public static JenkinsUserNotifierDecorator getConfig() {
 		return PageDecorator.all().get(JenkinsUserNotifierDecorator.class);
 	}
 
@@ -73,7 +73,7 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	@Override
 	public boolean configure(StaplerRequest req, JSONObject formData)
 			throws FormException {
-		this.aktive = formData.getBoolean("aktive");
+		this.active = formData.getBoolean("active");
 		this.information = formData.getString("information");
 		this.date = formData.getString("date");
 
@@ -165,9 +165,9 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 
 	/**
 	 * Getter for the saved notification aktivated state
-	 * @return aktive
+	 * @return active
 	 */
-	public Boolean getAktive() { return this.aktive; }
+	public Boolean getActive() { return this.active; }
 
 	/**
 	 * Getter for the notification uuid (timestamp)
@@ -191,20 +191,26 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	 * @return true if current date is smaller than the saved one
 	 */
 	public boolean getNotificationActiveStatus() throws ParseException {
-		// if there is no date given, then show the notification
-		if(this.date != null && !Objects.equals(this.date, ""))
-		{
-			// otherwise check if date is past already
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-			Date convertedDate = null;
+	    // return value if Notification is active or not
+	    boolean active = false;
+	    if (this.active) {
+            active = true;
 
-			convertedDate = simpleDateFormat.parse(this.date);
+            // if there is no date given, then show the notification
+            if (this.date != null && !Objects.equals(this.date, "")) {
+                // otherwise check if date is past already and deactivate if so
+                SimpleDateFormat simpleDateFormat =
+                        new SimpleDateFormat("MM/dd/yyyy");
+                Date convertedDate = null;
 
-			long currentEpoch = System.currentTimeMillis() / 1000;
-			assert convertedDate != null;
-			return currentEpoch < (convertedDate.getTime() / 1000) && this.aktive;
-		}
-		return true;
+                convertedDate = simpleDateFormat.parse(this.date);
+                assert convertedDate != null;
+
+                active = (System.currentTimeMillis() / 1000) <
+                        (convertedDate.getTime() / 1000);
+            }
+        }
+		return active;
 	}
 
 	/**

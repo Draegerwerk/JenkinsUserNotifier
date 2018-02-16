@@ -27,7 +27,7 @@
 	<j:if test="${it.getNotificationActiveStatus()}">
 		<div class="notifier_container" id="notifier_container" style="display: none;">
 			<div class="notifier_icon">
-				<img src="${rootURL}/plugin/JenkinsUserNotifier/images/Tango-style_info_icon.svg" height="24px"></img>
+				<img src="${rootURL}/plugin/JenkinsUserNotifier/images/Tango-style_info_icon.svg" height="24px" />
 			</div>
 
             <div class="notifier_message">
