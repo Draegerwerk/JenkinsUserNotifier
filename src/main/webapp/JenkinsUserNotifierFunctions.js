@@ -84,3 +84,16 @@ function cookieExists(uuid) {
 	}
 	return true;
 }
+
+// returns the current browser language
+function getLanguage()
+{
+    var locale = "";
+    if (navigator.languages != undefined) {
+        locale = navigator.languages[0];
+    } else {
+        locale = navigator.language;
+    }
+
+    return locale.replace("-", "").replace("_", "").toLowerCase();
+}

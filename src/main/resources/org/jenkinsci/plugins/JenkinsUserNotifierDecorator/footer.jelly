@@ -27,12 +27,21 @@
 	<j:if test="${it.getNotificationActiveStatus()}">
 		<div class="notifier_container" id="notifier_container" style="display: none;">
 			<div class="notifier_icon">
-				<img src="${rootURL}/plugin/JenkinsUserNotifier/images/Tango-style_info_icon.svg" height="24px"></img>
+				<img src="${rootURL}/plugin/JenkinsUserNotifier/images/Tango-style_info_icon.svg" height="24px" />
 			</div>
-			<div class="notifier_message">
-				${it.getInformation()}
-			</div>
-			<div class="notifier_close">
+
+            <div class="notifier_message">
+                <div id="default" style="display: none">
+                    ${it.getInformation()}
+                </div>
+                <j:forEach items="${it.getTranslations()}" var="translation">
+                    <div id="${translation.getLocale()}" style="display: none">
+                        ${translation.getTranslation()}
+                    </div>
+                </j:forEach>
+            </div>
+
+			<div class="notifier_close yui-push-button-hover">
 				<input type="button" onclick="hideNotifier('${it.getNotificationUUID()}', '${it.getDate()}');"
 					   value="OK" class="notifier_close_btn" />
 			</div>
@@ -44,6 +53,22 @@
 		 		notifier_container.style = "";
 				var header = document.getElementsByClassName("top-sticker-inner")[0];
 				header.appendChild(notifier_container.cloneNode(true));
+
+				// activate the text with the right locale
+				var notifiertext = document.getElementById(getLanguage());
+
+				// if the specific locale (4 letters like 'engb') wasn't defined check
+				// its parent (2 letter like 'en')
+				if( notifiertext == null ) {
+				    notifiertext = document.getElementById(getLanguage().substring(0,2));
+				}
+
+                // if no fitting locale was defined return to default
+				if( notifiertext == null ) {
+				    notifiertext = document.getElementById("default");
+				}
+
+				notifiertext.style = "";
 			}
 			notifier_container.outerHTML='';
 		</script>
