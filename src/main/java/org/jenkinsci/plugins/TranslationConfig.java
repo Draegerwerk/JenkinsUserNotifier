@@ -1,14 +1,20 @@
 package org.jenkinsci.plugins;
 
 import hudson.Extension;
+import hudson.markup.MarkupFormatter;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
+import org.apache.tools.ant.taskdefs.Java;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
@@ -41,7 +47,13 @@ public class TranslationConfig implements Describable<TranslationConfig> {
      * @return translation text
      */
     public String getTranslation() {
-        return this.translation;
+        try {
+            MarkupFormatter formatter = jenkins.model.Jenkins.getInstance().getMarkupFormatter();
+            return formatter.translate(this.translation);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return this.translation;
+        }
     }
 
     @Extension(optional = true)

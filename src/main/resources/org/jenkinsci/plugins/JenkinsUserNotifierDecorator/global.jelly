@@ -25,14 +25,14 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<f:section title="${%Title}">
-		<f:entry title="${%AktiveText}" field="aktive">
+		<f:entry title="${%ActiveText}" field="active">
 			<f:checkbox />
 		</f:entry>
 		<f:entry title="${%ShowUntil}" help="${%ShowHelp}" field="date">
             <f:textbox />
         </f:entry>
 		<f:entry title="${%DisplayText}" help="${%DisplayHelp}" field="information">
-			<f:textbox />
+			<f:textarea previewEndpoint="/markupFormatter/previewDescription"/>
 		</f:entry>
 
         <f:entry title="${%Translations}" field="translations">
@@ -44,7 +44,7 @@
                 </f:entry>
 
                 <f:entry field="translation" title="${%Translation}" help="${%TranslationHelp}">
-                    <f:textbox />
+                    <f:textarea previewEndpoint="/markupFormatter/previewDescription"/>
                 </f:entry>
 
                 <f:entry>
