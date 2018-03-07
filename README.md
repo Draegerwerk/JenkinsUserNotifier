@@ -1,13 +1,13 @@
 # Jenkins User Notifier
 
-This Plugin is used to Make a global notification for any Jenkins user.
-It implements a Notification Bar that is visible at any webpage shown by Jenkins.
+This plugin offers global notification for any Jenkins user.
+It implements a notification bar that is visible on any page shown by Jenkins.
 
-Features are that the time for showing the notification is limited by a configurable date
-and that you can add translations to your notification so if your team of developers consists 
-of people around the world you can give them native messages with a fallback langage.
+It offers features like showing notifications for a limited time by a configurable date,
+translation of notifications so that global teams can be notified with native messages
+as a fallback language and so on.
 
 
-@Author Yannik, Petersen aka. ptrsny
+@Author Yannik, Petersen aka. ptrsny by Draegerwerk AG & Co. KGaA
 
-This Plugin is OpenSource and runs under the MIT License
+This plugin is OpenSource and is MIT licensed

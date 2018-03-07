@@ -1,7 +1,7 @@
 /*
 	The MIT License
 
-	Copyright (c) 2017, Draegerwerk AG & Co. KGaA , Yannik Petersen
+	Copyright (c) 2017-2018, Draegerwerk AG & Co. KGaA , Yannik Petersen
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -25,25 +25,31 @@
 package org.jenkinsci.plugins;
 
 import hudson.Extension;
+import hudson.markup.MarkupFormatter;
 import hudson.model.PageDecorator;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Extension
-public class JenkinsUserNotifierDecorator extends PageDecorator{
+public class JenkinsUserNotifierDecorator extends PageDecorator {
 	private boolean active;
 	private String information;
 	private String date;
@@ -128,12 +134,18 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	 * @return the saved information
 	 */
 	public String getInformation() {
-		return this.information;
+		try {
+			MarkupFormatter formatter = Jenkins.getInstance().getMarkupFormatter();
+			return formatter.translate(this.information);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return this.information;
+		}
 	}
 
     /**
-     * Un use able because of "chicken egg problem" javascript is needed to get browser locale
-     * but jelly is interpreted before javascript
+     * Unuseable because of "chicken egg problem" javascript is needed to get browser locale
+     * but jelly is interpreted server-side
      *
      * Getter for the saved Information that is displayed inside the notification bar
      * it looks into the translations and evaluates if the requested locale is available
@@ -164,7 +176,7 @@ public class JenkinsUserNotifierDecorator extends PageDecorator{
 	}
 
 	/**
-	 * Getter for the saved notification aktivated state
+	 * Getter for the saved notification activated state
 	 * @return active
 	 */
 	public Boolean getActive() { return this.active; }

@@ -22,7 +22,7 @@ describe("Cookie tests", function() {
 		expect(v).toBe(value);
 	});
 
-	it("Should the cookie", function() {
+	it("Should get the cookie", function() {
 		var v = getCookie(name);
 
 		expect(v).toBe(value);
@@ -32,7 +32,7 @@ describe("Cookie tests", function() {
 		expect(cookieExists(name)).toBe(true);
 	});
 
-	it("Cookie should exist", function() {
+	it("Cookie should not exist", function() {
 		// remove cookie from browser
 		document.cookie = name + "=" + ";path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT"
 

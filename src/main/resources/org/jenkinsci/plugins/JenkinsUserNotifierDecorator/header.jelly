@@ -44,7 +44,7 @@
 				float: right;
 				margin-right: 2em;
 			}
-			.notifier_close_btn{
+			.notifier_close_btn {
 				padding: 2px 11px;
 				border-radius: 1px;
 				border: 1px solid #cccccc;

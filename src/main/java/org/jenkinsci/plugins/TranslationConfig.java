@@ -4,17 +4,13 @@ import hudson.Extension;
 import hudson.markup.MarkupFormatter;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
-import org.apache.tools.ant.taskdefs.Java;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
@@ -25,7 +21,7 @@ public class TranslationConfig implements Describable<TranslationConfig> {
 
     @Override
     public Descriptor<TranslationConfig> getDescriptor() {
-        return Hudson.getInstance().getDescriptorOrDie(getClass());
+        return Jenkins.getInstance().getDescriptorOrDie(getClass());
     }
 
     @DataBoundConstructor
@@ -48,7 +44,7 @@ public class TranslationConfig implements Describable<TranslationConfig> {
      */
     public String getTranslation() {
         try {
-            MarkupFormatter formatter = jenkins.model.Jenkins.getInstance().getMarkupFormatter();
+            MarkupFormatter formatter = Jenkins.getInstance().getMarkupFormatter();
             return formatter.translate(this.translation);
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +68,7 @@ public class TranslationConfig implements Describable<TranslationConfig> {
 
         /**
          * Function for filling the Localization DropDown for Translations
-         * @return List of Strings. A String is one Representation of of a 1 or 5 letter locale
+         * @return List of Strings. A String is one Representation of of a 2 or 5 letter locale
          */
         public ListBoxModel doFillLocaleItems() {
             ListBoxModel items = new ListBoxModel();
