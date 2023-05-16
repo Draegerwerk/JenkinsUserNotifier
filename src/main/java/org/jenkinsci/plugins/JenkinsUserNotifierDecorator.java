@@ -55,11 +55,12 @@ public class JenkinsUserNotifierDecorator extends PageDecorator {
 	private String date;
 	private String uuid;
 
-    private List<TranslationConfig> translations;
+	private List<TranslationConfig> translations;
 
 	/**
 	 * Default Constructor
 	 */
+	@SuppressWarnings("deprecation")
 	public JenkinsUserNotifierDecorator() {
 		super(JenkinsUserNotifierDecorator.class);
 		load();
@@ -70,47 +71,49 @@ public class JenkinsUserNotifierDecorator extends PageDecorator {
 	}
 
 	/**
-	 * Configuration function called when a new configuration is saved inside jenkins
-	 * @param req The StaplerRequest
+	 * Configuration function called when a new configuration is saved inside
+	 * jenkins
+	 * 
+	 * @param req      The StaplerRequest
 	 * @param formData The new configuration data stored as an JSONObject
 	 * @return success state
 	 * @throws FormException
 	 */
 	@Override
-	public boolean configure(StaplerRequest req, JSONObject formData)
-			throws FormException {
+	public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
 		this.active = formData.getBoolean("active");
 		this.information = formData.getString("information");
 		this.date = formData.getString("date");
 
-        this.translations = new ArrayList<TranslationConfig>();
+		this.translations = new ArrayList<TranslationConfig>();
 
-        // check for existence of translations configured
-        if( formData.containsKey("translations") ) {
-            // are there multiple translations configured
-            JSONArray translations = formData.optJSONArray("translations");
-            if( translations != null ) {
-                for (int i = 0; i < translations.size(); i++) {
-                    JSONObject translation = translations.getJSONObject(i);
+		// check for existence of translations configured
+		if (formData.containsKey("translations")) {
+			// are there multiple translations configured
+			JSONArray translations = formData.optJSONArray("translations");
+			if (translations != null) {
+				for (int i = 0; i < translations.size(); i++) {
+					JSONObject translation = translations.getJSONObject(i);
 
-                    String locale = translation.getString("locale");
-                    String text = translation.getString("translation");
+					String locale = translation.getString("locale");
+					String text = translation.getString("translation");
 
-                    this.translations.add(new TranslationConfig(text, locale));
-                }
-            } else {
-                // there is probably just one translation configured
-                JSONObject translation = formData.optJSONObject("translations");
-                if( translation != null ) {
-                    String locale = translation.getString("locale");
-                    String text = translation.getString("translation");
+					this.translations.add(new TranslationConfig(text, locale));
+				}
+			} else {
+				// there is probably just one translation configured
+				JSONObject translation = formData.optJSONObject("translations");
+				if (translation != null) {
+					String locale = translation.getString("locale");
+					String text = translation.getString("translation");
 
-                    this.translations.add(new TranslationConfig(text, locale));
-                }
-            }
-        }
+					this.translations.add(new TranslationConfig(text, locale));
+				}
+			}
+		}
 
-		// generate uuid for the cookie that is saved for any client that hides the notification bar
+		// generate uuid for the cookie that is saved for any client that hides the
+		// notification bar
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
 			md.update(this.date.getBytes("UTF-8"));
@@ -120,8 +123,7 @@ public class JenkinsUserNotifierDecorator extends PageDecorator {
 				sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
 			}
 			this.uuid = sb.toString();
-		}
-		catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
@@ -130,45 +132,50 @@ public class JenkinsUserNotifierDecorator extends PageDecorator {
 	}
 
 	/**
-	 * Getter for the saved Information that is displayed inside the notification bar
+	 * Getter for the saved Information that is displayed inside the notification
+	 * bar
+	 * 
 	 * @return the saved information
 	 */
 	public String getInformation() {
-		try {
-			MarkupFormatter formatter = Jenkins.getInstance().getMarkupFormatter();
-			return formatter.translate(this.information);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return this.information;
-		}
+		 try {
+             MarkupFormatter formatter = Jenkins.getInstance().getMarkupFormatter();
+             return formatter.translate(this.information);
+         } catch (IOException e) {
+             e.printStackTrace();
+             return this.information;
+         }
 	}
 
-    /**
-     * Unuseable because of "chicken egg problem" javascript is needed to get browser locale
-     * but jelly is interpreted server-side
-     *
-     * Getter for the saved Information that is displayed inside the notification bar
-     * it looks into the translations and evaluates if the requested locale is available
-     * and returns the specific text for that. it defaults to the standard Information (en_GB)
-     * @param locale the String representation of the requested locale
-     * @return the requested text
-     */
-    @Deprecated
+	/**
+	 * Unuseable because of "chicken egg problem" javascript is needed to get
+	 * browser locale but jelly is interpreted server-side
+	 *
+	 * Getter for the saved Information that is displayed inside the notification
+	 * bar it looks into the translations and evaluates if the requested locale is
+	 * available and returns the specific text for that. it defaults to the standard
+	 * Information (en_GB)
+	 * 
+	 * @param locale the String representation of the requested locale
+	 * @return the requested text
+	 */
+	@Deprecated
 	public String getInformationByLocale(String locale) {
-	    String return_text = this.information;
+		String return_text = this.information;
 
-        for(TranslationConfig translation: translations) {
-            if( translation.getLocale().equals(locale)) {
-                return_text = translation.getTranslation();
-                break;
-            }
-        }
+		for (TranslationConfig translation : translations) {
+			if (translation.getLocale().equals(locale)) {
+				return_text = translation.getTranslation();
+				break;
+			}
+		}
 
-        return return_text;
-    }
+		return return_text;
+	}
 
 	/**
 	 * Getter for the saved date the notification will be shown
+	 * 
 	 * @return the saved date
 	 */
 	public String getDate() {
@@ -177,64 +184,70 @@ public class JenkinsUserNotifierDecorator extends PageDecorator {
 
 	/**
 	 * Getter for the saved notification activated state
+	 * 
 	 * @return active
 	 */
-	public Boolean getActive() { return this.active; }
+	public Boolean getActive() {
+		return this.active;
+	}
 
 	/**
 	 * Getter for the notification uuid (timestamp)
+	 * 
 	 * @return uuid
 	 */
 	public String getNotificationUUID() {
 		return this.uuid;
 	}
 
-    /**
-     * Getter for the translation configurations
-     * @return List of Translation Configurations
-     */
-    public List<TranslationConfig> getTranslations() {
-	    return this.translations;
-    }
+	/**
+	 * Getter for the translation configurations
+	 * 
+	 * @return List of Translation Configurations
+	 */
+	public List<TranslationConfig> getTranslations() {
+		return this.translations;
+	}
 
 	/**
-	 * Compares the current date with the date that was saved,
-	 * to evaluate if the Notification Banner should be loaded or not
+	 * Compares the current date with the date that was saved, to evaluate if the
+	 * Notification Banner should be loaded or not
+	 * 
 	 * @return true if current date is smaller than the saved one
 	 */
 	public boolean getNotificationActiveStatus() throws ParseException {
-	    // return value if Notification is active or not
-	    boolean active = false;
-	    if (this.active) {
-            active = true;
+		// return value if Notification is active or not
+		boolean active = false;
+		if (this.active) {
+			active = true;
 
-            // if there is no date given, then show the notification
-            if (this.date != null && !Objects.equals(this.date, "")) {
-                // otherwise check if date is past already and deactivate if so
-                SimpleDateFormat simpleDateFormat =
-                        new SimpleDateFormat("MM/dd/yyyy");
-                Date convertedDate = null;
+			// if there is no date given, then show the notification
+			if (this.date != null && !Objects.equals(this.date, "")) {
+				// otherwise check if date is past already and deactivate if so
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				Date convertedDate = null;
 
-                convertedDate = simpleDateFormat.parse(this.date);
-                assert convertedDate != null;
+				convertedDate = simpleDateFormat.parse(this.date);
+				assert convertedDate != null;
 
-                active = (System.currentTimeMillis() / 1000) <
-                        (convertedDate.getTime() / 1000);
-            }
-        }
+				active = (System.currentTimeMillis() / 1000) < (convertedDate.getTime() / 1000);
+			}
+		}
 		return active;
 	}
 
 	/**
-	 * validation function that is automatically called, when when the user unfocuses the configuration textbox
+	 * validation function that is automatically called, when when the user
+	 * unfocuses the configuration textbox
+	 * 
 	 * @param date the date string that is to be validated
 	 * @return the type of validation status: ok, error
 	 */
-	public FormValidation doCheckDate(@QueryParameter(fixEmpty=true) String date) {
+	public FormValidation doCheckDate(@QueryParameter(fixEmpty = true) String date) {
 		if (date != null && !Objects.equals(date, "")) {
 			Pattern p = Pattern.compile("^(0[123456789]|1[012])/(0[123456789]|[12]\\d|3[01])/\\d\\d\\d\\d$");
 			Matcher m = p.matcher(date);
-			if(!m.matches()) {
+			if (!m.matches()) {
 				return FormValidation.error(String.format("%s is not a valid date!", date));
 			}
 		}

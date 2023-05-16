@@ -4,14 +4,17 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.33</version>
+        <version>4.63</version>
         <relativePath />
     </parent>
     <artifactId>JenkinsUserNotifier</artifactId>
     <version>1.1</version>
     <packaging>hpi</packaging>
     <properties>
-        <jenkins.version>2.7.3</jenkins.version>
+        <jenkins.version>2.387.3</jenkins.version>
+        <java.version>11</java.version>
+        <java.level>11</java.level>
+        <java.level.test>11</java.level.test>
     </properties>
     <name>JenkinsUserNotifier</name>
     <description>Used to notify all users about a specified information</description>
@@ -22,6 +25,42 @@
             <url>http://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jenkins-ci.tools</groupId>
+				<artifactId>maven-hpi-plugin</artifactId>
+				<configuration>
+					<loggers>
+						<org.jenkinsci.plugins.workflow.multibranch>FINE</org.jenkinsci.plugins.workflow.multibranch>
+					</loggers>
+					<minimumJavaVersion>11</minimumJavaVersion>
+				</configuration>
+			  </plugin>
+			<plugin>
+				<groupId>org.kohsuke</groupId>
+			    <artifactId>access-modifier-checker</artifactId>
+			    <configuration>
+			        <skip>true</skip>
+			    </configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+		    <groupId>org.kohsuke</groupId>
+		    <artifactId>access-modifier-checker</artifactId>
+		    <version>1.7</version>
+		</dependency>
+	</dependencies>
     <!-- Assuming you want to host on @jenkinsci:
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>

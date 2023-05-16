@@ -51,7 +51,7 @@
 			var notifier_container = document.getElementById("notifier_container");
 		 	if( !cookieExists('${it.getNotificationUUID()}') ) {
 		 		notifier_container.style = "";
-				var header = document.getElementsByClassName("top-sticker-inner")[0];
+				var header = document.getElementById("breadcrumb-menu-target");
 				header.appendChild(notifier_container.cloneNode(true));
 
 				// activate the text with the right locale
